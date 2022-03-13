@@ -15,9 +15,9 @@ public class App extends JFrame {
         this.add(toolbar(),BorderLayout.NORTH);
 
         JPanel footerbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        Label xcoord = new Label("0");
+        Label xcoord = new Label();
         Label separate = new Label(",");
-        Label ycoord = new Label("0");
+        Label ycoord = new Label();
         footerbar.add(xcoord);
         footerbar.add(separate);
         footerbar.add(ycoord);
@@ -27,7 +27,7 @@ public class App extends JFrame {
         pad = new JPanel(new FlowLayout(FlowLayout.LEFT));
         pad.setBackground(Color.WHITE);
 
-        pad.addMouseListener(new MouseListener(){
+        pad.addMouseListener(new MouseListener(){ 
             Point prePoint = new Point();
 
             @Override
@@ -45,6 +45,8 @@ public class App extends JFrame {
             public void mouseReleased(MouseEvent e) {
                 if(drawingMode.equals("LINE")){
                     line(pad.getGraphics(), prePoint, e.getPoint(), drawingColor);
+                } else if(drawingMode.equals("STAR")){
+                    star(pad.getGraphics(), prePoint, e.getPoint(), drawingColor);
                 }
             }
 
@@ -81,14 +83,6 @@ public class App extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
-    // public void draw(Point p, Point _p){
-    //     if(drawingMode.equals("LINE")){
-    //         line(pad.getGraphics(), p, _p, drawingColor);
-    //     }else if(drawingMode.equals("PEN")){
-    //         pen(pad.getGraphics(), _p, drawingColor);
-    //     }
-    // }
-
     public JPanel toolbar(){
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         Button penBtn = new Button("PEN");
@@ -104,6 +98,14 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawingMode = lineBtn.getLabel();
+            }
+        });
+
+        Button starBtn = new Button("STAR");
+        starBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drawingMode = starBtn.getLabel();
             }
         });
 
@@ -128,16 +130,15 @@ public class App extends JFrame {
         slider.setMajorTickSpacing(25);
         slider.setMinorTickSpacing(5);
         slider.setPaintTicks(true);
-        // slider.setPaintLabels(true);
         slider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 drawingWidth = slider.getValue();
             }
         });
-   
         
         toolbar.add(penBtn);
         toolbar.add(lineBtn);
+        toolbar.add(starBtn);
         toolbar.add(clearBtn);
         toolbar.add(colorPicker);
         toolbar.add(slider);
@@ -152,6 +153,11 @@ public class App extends JFrame {
     public void line(Graphics g, Point pStart, Point pEnd, Color c){
         Line line = new Line(pStart, c, drawingWidth);
         line.paintComponent(g, pEnd);
+    }
+
+    public void star(Graphics g, Point pStart, Point pEnd, Color c){
+        Star star = new Star(pStart, c);
+        star.paintComponent(g, pEnd);
     }
 	
 	public static void main(String[] a){

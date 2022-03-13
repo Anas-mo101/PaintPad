@@ -1,12 +1,13 @@
 import java.awt.*;
-import java.util.Arrays;
+// import java.util.Arrays;
 
 import javax.swing.*;
 
 public class Pen extends JComponent{
     private Color color;
     // private Point points[] = new Point[2];
-    private Point prePoint = new Point();
+    // private Point prePoint = new Point();
+
     public int width;
 
     public Pen(Color color, int width)
