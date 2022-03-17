@@ -5,8 +5,6 @@ import javax.swing.*;
 
 public class Pen extends JComponent{
     private Color color;
-    // private Point points[] = new Point[2];
-    // private Point prePoint = new Point();
 
     public int width;
 
@@ -15,11 +13,6 @@ public class Pen extends JComponent{
         super();
         this.color = color;
         this.width = width;
-    }
-
-    public Pen(int width)
-    {
-        this(Color.BLACK, width);
     }
 
     public void paintComponent(Graphics g, Point p)

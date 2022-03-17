@@ -7,9 +7,9 @@ import javax.swing.event.ChangeListener;
 public class App extends JFrame {
     JPanel pad;
     int drawingWidth = 5;
-    String drawingMode = "PEN";
     Color drawingColor = Color.BLACK;
-
+    DrawingPointer cursior = DrawingPointer.getInstance();
+    
 	public App(){
 		super("Paint");
         this.add(toolbar(),BorderLayout.NORTH);
@@ -27,50 +27,39 @@ public class App extends JFrame {
         pad = new JPanel(new FlowLayout(FlowLayout.LEFT));
         pad.setBackground(Color.WHITE);
 
-        pad.addMouseListener(new MouseListener(){ 
-            Point prePoint = new Point();
-
+        pad.addMouseListener(new MouseListener(){
             @Override
-            public void mouseClicked(MouseEvent e) {}
-
+            public void mouseClicked(MouseEvent e) {
+                DrawingPointer.setMouseClicked(e, drawingColor, drawingWidth, pad.getGraphics());
+            }
             @Override
             public void mousePressed(MouseEvent e) {
-                prePoint.setLocation(e.getX(),e.getY());
-                if(drawingMode.equals("PEN")){
-                    pen(pad.getGraphics(), e.getPoint(), drawingColor);
-                }
+                DrawingPointer.setMousePressed(e, drawingColor, drawingWidth, pad.getGraphics());
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
-                if(drawingMode.equals("LINE")){
-                    line(pad.getGraphics(), prePoint, e.getPoint(), drawingColor);
-                } else if(drawingMode.equals("STAR")){
-                    star(pad.getGraphics(), prePoint, e.getPoint(), drawingColor);
-                }
+                DrawingPointer.setMouseReleased(e, drawingColor, drawingWidth, pad.getGraphics());
             }
-
             @Override
-            public void mouseEntered(MouseEvent e) {}
-
+            public void mouseEntered(MouseEvent e) {
+                DrawingPointer.setMouseEntered(e, drawingColor, drawingWidth, pad.getGraphics());
+            }
             @Override
-            public void mouseExited(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {
+                DrawingPointer.setMouseExited(e, drawingColor, drawingWidth, pad.getGraphics());
+            }
         });
 
         pad.addMouseMotionListener(new MouseMotionListener(){
-            // Point prePoint = new Point();
             @Override
             public void mouseDragged(MouseEvent e) {
+                DrawingPointer.setMouseDragged(e, drawingColor, drawingWidth, pad.getGraphics());
                 xcoord.setText(Integer.toString(e.getX()));
                 ycoord.setText(Integer.toString(e.getY()));
-                if(drawingMode.equals("PEN")){
-                    pen(pad.getGraphics(), e.getPoint(), drawingColor);
-                }
-                // draw(new Point(), e.getPoint());
             }
-
             @Override
             public void mouseMoved(MouseEvent e) {
+                DrawingPointer.setMouseMoved(e, drawingColor, drawingWidth, pad.getGraphics());
                 xcoord.setText(Integer.toString(e.getX()));
                 ycoord.setText(Integer.toString(e.getY()));
             } 
@@ -83,13 +72,29 @@ public class App extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
+    /**
+     * Function to create painting toolbar 
+     * @return Toolbar to be added 
+     */
     public JPanel toolbar(){
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        Button curBtn = new Button("CURSIOR");
+        curBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DrawingPointer.setSate(0);
+                
+            }
+        });
+
         Button penBtn = new Button("PEN");
         penBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingMode = penBtn.getLabel();
+                // drawingMode = penBtn.getLabel();
+                DrawingPointer.setSate(1);
+                
             }
         });
         
@@ -97,7 +102,8 @@ public class App extends JFrame {
         lineBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingMode = lineBtn.getLabel();
+                // drawingMode = lineBtn.getLabel();
+                DrawingPointer.setSate(2);
             }
         });
 
@@ -105,7 +111,8 @@ public class App extends JFrame {
         starBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingMode = starBtn.getLabel();
+                // drawingMode = starBtn.getLabel();
+                DrawingPointer.setSate(3);
             }
         });
 
@@ -136,6 +143,7 @@ public class App extends JFrame {
             }
         });
         
+        toolbar.add(curBtn);
         toolbar.add(penBtn);
         toolbar.add(lineBtn);
         toolbar.add(starBtn);
@@ -145,21 +153,6 @@ public class App extends JFrame {
         return toolbar;
     }
 
-    public void pen(Graphics g, Point p, Color c){
-        Pen dot = new Pen(c, drawingWidth);
-        dot.paintComponent(g, p);
-    }
-
-    public void line(Graphics g, Point pStart, Point pEnd, Color c){
-        Line line = new Line(pStart, c, drawingWidth);
-        line.paintComponent(g, pEnd);
-    }
-
-    public void star(Graphics g, Point pStart, Point pEnd, Color c){
-        Star star = new Star(pStart, c);
-        star.paintComponent(g, pEnd);
-    }
-	
 	public static void main(String[] a){
 		new App();
 	}
