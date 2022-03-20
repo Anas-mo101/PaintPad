@@ -154,14 +154,10 @@ public class DrawingPointer {
     public static void line(String e, Color c, int w, Graphics g){
         Line line = new Line(mousePressed, c, w);
         
-        if(e.equals("MouseDragged")){
+        if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
 
             line.init(mouseDragged, prePoint, g);
             prePoint2 = mouseDragged;
-
-        }else if(e.equals("MousePressedAndStill")){
-
-            line.init(mouseDragged, prePoint, g);
 
         }else if(e.equals("MouseReleased")){
             try {
@@ -182,14 +178,9 @@ public class DrawingPointer {
      */
     public static void star(String e, Color c, Graphics g){
         Star star = new Star(mousePressed, c);
-        if(e.equals("MouseDragged")){
+        if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
             star.init(mouseDragged, g);
             prePoint2 = mouseDragged;
-        }else if(e.equals("MousePressedAndStill")){
-
-            star.init(mouseDragged, g);;
-            System.out.println("hold Line");
-
         }else if(e.equals("MouseReleased")){
             try {
                 Thread.sleep(50);

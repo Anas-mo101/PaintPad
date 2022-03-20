@@ -109,7 +109,6 @@ public class App extends JFrame {
         penBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // drawingMode = penBtn.getLabel();
                 DrawingPointer.setSate(1);
                 
             }
