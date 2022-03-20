@@ -1,5 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * DrawingPointer Class is responsible to make use of mouse events in order to draw shapes
@@ -13,27 +17,97 @@ public class DrawingPointer {
     private static Point mouseExited;
     private static Point mouseMoved;
 
-    public static Point lastPoint;
+    private static Point prePoint;
+    private static Point prePoint2;
+
+    private static Boolean pressed = false;
+
 
     private static final String states[] = {"CURSIOR","PEN","LINE","STAR"};
     private static String state = states[0];
 
     private static DrawingPointer c = new DrawingPointer();
 
-    DrawingPointer(){}
+    private static Graphics graphics;
+    private static Color inkColor;
+    private static int width;
 
-    private static void doAtion(String event, Color c, int w, Graphics g){
+    DrawingPointer(){
+        checkPressedAndStill();
+    }
+
+    public static void doMouseAtion(MouseEvent event, String etype, Color c, int w, Graphics g){
+        graphics = g;
+        inkColor = c;
+        width = w;
+        updateMouseEventsPoints(event, etype);
+
         switch(state){
-            case "CURSIOR": cursior(event);
+            case "CURSIOR": cursior(etype);
                             break;
-            case "PEN":     pen(event, c, w, g);
+            case "PEN":     pen(etype, c, w, g);
                             break;
-            case "LINE":    line(event, c, w, g);
+            case "LINE":    line(etype, c, w, g);
                             break;
-            case "STAR":    star(event, c, w, g);
+            case "STAR":    star(etype, c, g);
                             break;
+            default:        break;
         }
     }
+
+
+
+    private static void updateMouseEventsPoints(MouseEvent event, String etype){
+        switch(etype){
+            case "MousePressed": 
+                mousePressed = event.getPoint();
+                prePoint = mousePressed;
+                prePoint2 = mousePressed;
+                pressed = true;
+                break;
+            case "MouseReleased":     
+                mouseReleased = event.getPoint();
+                pressed = false;
+                break;
+            case "MouseEntered":    
+                mouseEntered = event.getPoint();
+                break;
+            case "MouseDragged":    
+                mouseDragged = event.getPoint();
+                break;
+            case "MouseExited":    
+                mouseExited = event.getPoint();
+                break;
+            case "MouseMoved":    
+                mouseMoved= event.getPoint();
+                break;
+            default:   break;
+        }
+    }
+
+    /**
+     * Used to create custom mouse events. e.g Mouse Pressed And Still
+     */
+    public static void checkPressedAndStill(){
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(new Runnable() {
+        @Override
+        public void run() {
+            if(pressed){
+                if(prePoint2 == mouseDragged){
+                    switch(state){
+                        case "LINE":    line("MousePressedAndStill", inkColor, width, graphics);
+                                        break;
+                        case "STAR":    star("MousePressedAndStill", Color.BLACK, graphics);
+                                        break;
+                        default:        break;
+                    }
+                }
+            }
+        }
+        }, 0, 50, TimeUnit.MILLISECONDS);
+    }
+
 
     /**
      * Used to get the singleton instance of pointer
@@ -54,62 +128,7 @@ public class DrawingPointer {
             state = states[0];
         }
     }
-
-    /**
-     * Used to set new mouseClicked point
-     */
-    public static void setMouseClicked(MouseEvent e, Color c, int w, Graphics g){
-        mouseClicked = e.getPoint();
-    }
-
-    /**
-     * Used to set new setMousePressed point
-     */
-    public static void setMousePressed(MouseEvent e, Color c, int w, Graphics g){
-        mousePressed = e.getPoint();
-        doAtion("MousePressed", c ,w, g);
-    }
-
-    /**
-     * Used to set new mouseReleased point
-     */
-    public static void setMouseReleased(MouseEvent e, Color c, int w, Graphics g){
-        mouseReleased = e.getPoint();
-        doAtion("MouseReleased", c ,w, g);
-    }
-
-    /**
-     * Used to set new mouseEntered point
-     */
-    public static void setMouseEntered(MouseEvent e, Color c, int w, Graphics g){
-        mouseEntered = e.getPoint();
-        doAtion("MouseEntered", c ,w, g);
-    }
-
-    /**
-     * Used to set new mouseDragged point
-     */
-    public static void setMouseDragged(MouseEvent e, Color c, int w, Graphics g){
-        mouseDragged = e.getPoint();
-        doAtion("MouseDragged", c ,w, g);
-    }
-
-    /**
-     * Used to set new mouseExited point
-     */
-    public static void setMouseExited(MouseEvent e, Color c, int w, Graphics g){
-        mouseExited = e.getPoint();
-        doAtion("MouseExited", c ,w, g);
-    }
-
-    /**
-     * Used to set new mouseMoved point
-     */
-    public static void setMouseMoved(MouseEvent e, Color c, int w, Graphics g){
-        mouseMoved = e.getPoint();
-        doAtion("MouseMoved", c ,w, g);
-    }
-
+    
     /**
      * Used to handle pen state drawing
      * @param e mouse event type 
@@ -120,7 +139,8 @@ public class DrawingPointer {
     public static void pen(String e, Color c, int w, Graphics g){
         Pen dot = new Pen(c, w);
         if(e.equals("MouseDragged")){
-            dot.paintComponent(g, mouseDragged);
+            dot._paintComponent(g, mouseDragged, prePoint);
+            prePoint = mouseDragged;
         }
     }
 
@@ -133,16 +153,25 @@ public class DrawingPointer {
      */
     public static void line(String e, Color c, int w, Graphics g){
         Line line = new Line(mousePressed, c, w);
+        
         if(e.equals("MouseDragged")){
-            line.init(mouseDragged, g);
-        }
 
-        if(e.equals("MouseReleased")){
-            line.paintComponent(mouseReleased, g);
-            System.out.println("Star Released");
+            line.init(mouseDragged, prePoint, g);
+            prePoint2 = mouseDragged;
+
+        }else if(e.equals("MousePressedAndStill")){
+
+            line.init(mouseDragged, prePoint, g);
+
+        }else if(e.equals("MouseReleased")){
+            try {
+                Thread.sleep(50);
+                line.paintComponent(mouseReleased, g);
+            } catch (InterruptedException event) {
+                event.printStackTrace();
+            }
         }
     }
-
 
     /**
      * Used to handle star state drawing
@@ -151,14 +180,24 @@ public class DrawingPointer {
      * @param w drawing star width
      * @param g drawing pad graphics
      */
-    public static void star(String e, Color c, int w, Graphics g){
+    public static void star(String e, Color c, Graphics g){
         Star star = new Star(mousePressed, c);
         if(e.equals("MouseDragged")){
             star.init(mouseDragged, g);
-        }
+            prePoint2 = mouseDragged;
+        }else if(e.equals("MousePressedAndStill")){
 
-        if(e.equals("MouseReleased")){
-            star.paintComponent(g, mouseReleased);
+            star.init(mouseDragged, g);;
+            System.out.println("hold Line");
+
+        }else if(e.equals("MouseReleased")){
+            try {
+                Thread.sleep(50);
+                star.paintComponent(g, mouseReleased);
+                System.out.println("Draw line");
+            } catch (InterruptedException event) {
+                event.printStackTrace();
+            }
         }
     }
 

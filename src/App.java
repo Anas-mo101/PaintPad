@@ -5,14 +5,20 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class App extends JFrame {
-    JPanel pad;
+    // JPanel pad;
+    JLayeredPane pad = new JLayeredPane();
+    final int DRAG_LAYER = 2;
+    final int DRAW_LAYER = 1;
+
     int drawingWidth = 5;
+    int layers = 0;
     Color drawingColor = Color.BLACK;
     DrawingPointer cursior = DrawingPointer.getInstance();
     
 	public App(){
 		super("Paint");
         this.add(toolbar(),BorderLayout.NORTH);
+        
 
         JPanel footerbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         Label xcoord = new Label();
@@ -24,42 +30,49 @@ public class App extends JFrame {
         this.add(footerbar,BorderLayout.SOUTH);
 
         JPanel parentPad = new JPanel(new GridLayout());
-        pad = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // pad = new JLayeredPane(new FlowLayout(FlowLayout.LEFT));
+        pad.setOpaque(true);
         pad.setBackground(Color.WHITE);
+        pad.setDoubleBuffered(false);
 
         pad.addMouseListener(new MouseListener(){
+            
             @Override
             public void mouseClicked(MouseEvent e) {
-                DrawingPointer.setMouseClicked(e, drawingColor, drawingWidth, pad.getGraphics());
+                DrawingPointer.doMouseAtion(e,"MouseClicked", drawingColor, drawingWidth, pad.getGraphics());
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                DrawingPointer.setMousePressed(e, drawingColor, drawingWidth, pad.getGraphics());
+                DrawingPointer.doMouseAtion(e,"MousePressed", drawingColor, drawingWidth, pad.getGraphics());
+                
             }
             @Override
             public void mouseReleased(MouseEvent e) {
-                DrawingPointer.setMouseReleased(e, drawingColor, drawingWidth, pad.getGraphics());
+                DrawingPointer.doMouseAtion(e,"MouseReleased", drawingColor, drawingWidth, pad.getGraphics());
+                
             }
             @Override
             public void mouseEntered(MouseEvent e) {
-                DrawingPointer.setMouseEntered(e, drawingColor, drawingWidth, pad.getGraphics());
+                DrawingPointer.doMouseAtion(e,"MouseEntered", drawingColor, drawingWidth, pad.getGraphics());
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                DrawingPointer.setMouseExited(e, drawingColor, drawingWidth, pad.getGraphics());
+                DrawingPointer.doMouseAtion(e,"MouseExited", drawingColor, drawingWidth, pad.getGraphics());
             }
         });
 
-        pad.addMouseMotionListener(new MouseMotionListener(){
+        pad.addMouseMotionListener(new MouseMotionListener(){ 
             @Override
             public void mouseDragged(MouseEvent e) {
-                DrawingPointer.setMouseDragged(e, drawingColor, drawingWidth, pad.getGraphics());
+                DrawingPointer.doMouseAtion(e,"MouseDragged", drawingColor, drawingWidth, pad.getGraphics());
+
                 xcoord.setText(Integer.toString(e.getX()));
                 ycoord.setText(Integer.toString(e.getY()));
             }
+
             @Override
             public void mouseMoved(MouseEvent e) {
-                DrawingPointer.setMouseMoved(e, drawingColor, drawingWidth, pad.getGraphics());
+                DrawingPointer.doMouseAtion(e,"MouseMoved", drawingColor, drawingWidth, pad.getGraphics());
                 xcoord.setText(Integer.toString(e.getX()));
                 ycoord.setText(Integer.toString(e.getY()));
             } 
@@ -72,6 +85,10 @@ public class App extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
+    public int getNewLayer(){
+        return ++layers;
+    }
+
     /**
      * Function to create painting toolbar 
      * @return Toolbar to be added 
@@ -79,7 +96,7 @@ public class App extends JFrame {
     public JPanel toolbar(){
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        Button curBtn = new Button("CURSIOR");
+        JButton curBtn = new JButton(new ImageIcon("media/hand-index-thumb-fill.png"));
         curBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,7 +105,7 @@ public class App extends JFrame {
             }
         });
 
-        Button penBtn = new Button("PEN");
+        JButton penBtn = new JButton(new ImageIcon("media/pen-fill.png"));
         penBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -98,7 +115,7 @@ public class App extends JFrame {
             }
         });
         
-        Button lineBtn = new Button("LINE");
+        JButton lineBtn = new JButton(new ImageIcon("media/slash-lg.png")); //line
         lineBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -107,7 +124,7 @@ public class App extends JFrame {
             }
         });
 
-        Button starBtn = new Button("STAR");
+        JButton starBtn = new JButton(new ImageIcon("media/star-fill.png")); //star
         starBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,7 +133,7 @@ public class App extends JFrame {
             }
         });
 
-        Button clearBtn = new Button("CLEAR");
+        JButton clearBtn = new JButton(new ImageIcon("media/trash-fill.png")); // clear
         clearBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

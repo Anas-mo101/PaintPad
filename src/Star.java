@@ -57,6 +57,8 @@ public class Star extends JComponent{
         }
     }
 
+    
+
     /**
      * Used to draw final shape 
      * @param g drawing pad graphics
