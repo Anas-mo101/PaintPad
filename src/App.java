@@ -132,6 +132,15 @@ public class App extends JFrame {
             }
         });
 
+        JButton triangleBtn = new JButton(new ImageIcon("media/triangle-fill.png")); //triangle
+        triangleBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // drawingMode = starBtn.getLabel();
+                DrawingPointer.setSate(4);
+            }
+        });
+
         JButton clearBtn = new JButton(new ImageIcon("media/trash-fill.png")); // clear
         clearBtn.addActionListener(new ActionListener() {
             @Override
@@ -163,6 +172,7 @@ public class App extends JFrame {
         toolbar.add(penBtn);
         toolbar.add(lineBtn);
         toolbar.add(starBtn);
+        toolbar.add(triangleBtn);
         toolbar.add(clearBtn);
         toolbar.add(colorPicker);
         toolbar.add(slider);
