@@ -23,7 +23,7 @@ public class DrawingPointer {
     private static Boolean pressed = false;
 
 
-    private static final String states[] = {"CURSIOR","PEN","LINE","STAR"};
+    private static final String states[] = {"CURSIOR","PEN","LINE","STAR","TRIANGLE"};
     private static String state = states[0];
 
     private static DrawingPointer c = new DrawingPointer();
@@ -51,6 +51,8 @@ public class DrawingPointer {
                             break;
             case "STAR":    star(etype, c, g);
                             break;
+            case "TRIANGLE":triangle(etype, c, g);
+                            break;                
             default:        break;
         }
     }
@@ -99,6 +101,8 @@ public class DrawingPointer {
                         case "LINE":    line("MousePressedAndStill", inkColor, width, graphics);
                                         break;
                         case "STAR":    star("MousePressedAndStill", Color.BLACK, graphics);
+                                        break;
+                        case "TRIANGLE":triangle("MousePressedAndStill", Color.BLACK, graphics);
                                         break;
                         default:        break;
                     }
@@ -185,6 +189,29 @@ public class DrawingPointer {
             try {
                 Thread.sleep(50);
                 star.paintComponent(g, mouseReleased);
+                System.out.println("Draw line");
+            } catch (InterruptedException event) {
+                event.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Used to handle triangle state drawing
+     * @param e mouse event type 
+     * @param c picked drawing color
+     * @param w drawing star width
+     * @param g drawing pad graphics
+     */
+    public static void triangle(String e, Color c, Graphics g){
+        Triangle triangle = new Triangle(mousePressed, c);
+        if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
+            triangle.init(mouseDragged, g);
+            prePoint2 = mouseDragged;
+        }else if(e.equals("MouseReleased")){
+            try {
+                Thread.sleep(50);
+                triangle.paintComponent(g, mouseReleased);
                 System.out.println("Draw line");
             } catch (InterruptedException event) {
                 event.printStackTrace();
