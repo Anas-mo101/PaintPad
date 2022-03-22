@@ -177,6 +177,7 @@ public class DrawingPointer {
      * @param g drawing pad graphics
      */
     public static void star(String e, Color c, Graphics g){
+
         Star star = new Star(mousePressed, c);
         if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
             star.init(mouseDragged, g);
@@ -185,7 +186,6 @@ public class DrawingPointer {
             try {
                 Thread.sleep(50);
                 star.paintComponent(g, mouseReleased);
-                System.out.println("Draw line");
             } catch (InterruptedException event) {
                 event.printStackTrace();
             }

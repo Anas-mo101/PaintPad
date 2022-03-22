@@ -5,23 +5,18 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class App extends JFrame {
-    // JPanel pad;
-    JLayeredPane pad = new JLayeredPane();
-    final int DRAG_LAYER = 2;
-    final int DRAW_LAYER = 1;
 
-    int drawingWidth = 5;
-    int layers = 0;
-    Color drawingColor = Color.BLACK;
-    DrawingPointer cursior = DrawingPointer.getInstance();
+    private DrawingPad drawingPad = new DrawingPad();
     
 	public App(){
 		super("Paint");
+        this.setJMenuBar(confgbar()); 
         this.add(toolbar(),BorderLayout.NORTH);
         
 
         JPanel footerbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         Label xcoord = new Label();
+        
         Label separate = new Label(",");
         Label ycoord = new Label();
         footerbar.add(xcoord);
@@ -30,54 +25,20 @@ public class App extends JFrame {
         this.add(footerbar,BorderLayout.SOUTH);
 
         JPanel parentPad = new JPanel(new GridLayout());
-        // pad = new JLayeredPane(new FlowLayout(FlowLayout.LEFT));
-        pad.setOpaque(true);
-        pad.setBackground(Color.WHITE);
-        pad.setDoubleBuffered(false);
-
-        pad.addMouseListener(new MouseListener(){
-            
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                DrawingPointer.doMouseAtion(e,"MouseClicked", drawingColor, drawingWidth, pad.getGraphics());
-            }
-            @Override
-            public void mousePressed(MouseEvent e) {
-                DrawingPointer.doMouseAtion(e,"MousePressed", drawingColor, drawingWidth, pad.getGraphics());
-                
-            }
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                DrawingPointer.doMouseAtion(e,"MouseReleased", drawingColor, drawingWidth, pad.getGraphics());
-                
-            }
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                DrawingPointer.doMouseAtion(e,"MouseEntered", drawingColor, drawingWidth, pad.getGraphics());
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                DrawingPointer.doMouseAtion(e,"MouseExited", drawingColor, drawingWidth, pad.getGraphics());
-            }
-        });
-
-        pad.addMouseMotionListener(new MouseMotionListener(){ 
+        drawingPad.addMouseMotionListener(new MouseMotionListener(){ 
             @Override
             public void mouseDragged(MouseEvent e) {
-                DrawingPointer.doMouseAtion(e,"MouseDragged", drawingColor, drawingWidth, pad.getGraphics());
-
                 xcoord.setText(Integer.toString(e.getX()));
                 ycoord.setText(Integer.toString(e.getY()));
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                DrawingPointer.doMouseAtion(e,"MouseMoved", drawingColor, drawingWidth, pad.getGraphics());
                 xcoord.setText(Integer.toString(e.getX()));
                 ycoord.setText(Integer.toString(e.getY()));
             } 
         });
-        parentPad.add(pad);
+        parentPad.add(drawingPad);
         this.add(parentPad,BorderLayout.CENTER);
 
 		setSize(800,600);
@@ -85,8 +46,31 @@ public class App extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
-    public int getNewLayer(){
-        return ++layers;
+
+    /**
+     * Function to create configeration toolbar 
+     * @return Toolbar to be added 
+     */
+    public JMenuBar confgbar(){
+        JMenuBar mb = new JMenuBar();  
+        JMenu file = new JMenu("File");  
+        JMenu set = new JMenu("Settings");  
+        JMenu crds = new JMenu("Credits");  
+
+        JMenuItem sa = new JMenuItem("Save as");  
+        sa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drawingPad.saveImage();
+            }
+        });
+        file.add(sa); 
+        
+        mb.add(file);  
+        mb.add(set); 
+        mb.add(crds); 
+
+        return mb;
     }
 
     /**
@@ -100,8 +84,7 @@ public class App extends JFrame {
         curBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DrawingPointer.setSate(0);
-                
+                drawingPad.setPointerState(0);
             }
         });
 
@@ -109,8 +92,7 @@ public class App extends JFrame {
         penBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DrawingPointer.setSate(1);
-                
+                drawingPad.setPointerState(1);
             }
         });
         
@@ -118,8 +100,7 @@ public class App extends JFrame {
         lineBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // drawingMode = lineBtn.getLabel();
-                DrawingPointer.setSate(2);
+                drawingPad.setPointerState(2);
             }
         });
 
@@ -127,8 +108,7 @@ public class App extends JFrame {
         starBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // drawingMode = starBtn.getLabel();
-                DrawingPointer.setSate(3);
+                drawingPad.setPointerState(3);
             }
         });
 
@@ -136,14 +116,14 @@ public class App extends JFrame {
         clearBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                repaint();   
+                drawingPad.clearAll();
             }
         });
 
         ColorPicker colorPicker = new ColorPicker(Color.BLACK);
         colorPicker.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                drawingColor = colorPicker.getSelectedColor();
+                drawingPad.setColor(colorPicker.getSelectedColor());
             }
         });
 
@@ -155,7 +135,8 @@ public class App extends JFrame {
         slider.setPaintTicks(true);
         slider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                drawingWidth = slider.getValue();
+                // drawingWidth = slider.getValue();
+                drawingPad.setWidth(slider.getValue());
             }
         });
         
