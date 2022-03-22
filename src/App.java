@@ -12,7 +12,11 @@ public class App extends JFrame {
 		super("Paint");
         this.setJMenuBar(confgbar()); 
         this.add(toolbar(),BorderLayout.NORTH);
-        
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                drawingPad.setDrawingPad();
+            }
+        });
 
         JPanel footerbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         Label xcoord = new Label();

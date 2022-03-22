@@ -19,12 +19,12 @@ public class Pen extends JComponent{
       return this.getComp();
     }
 
-    public void paintComponent(Graphics g, Point p)
-    {
-        super.paintComponent(g);
-        g.setColor(color);
-        g.fillOval((int)p.getX(), (int)p.getY(), width, width);
-    }
+    // public void paintComponent(Graphics g, Point p)
+    // {
+    //     super.paintComponent(g);
+    //     g.setColor(color);
+    //     g.fillOval((int)p.getX(), (int)p.getY(), width, width);
+    // }
 
     public void _paintComponent(Graphics g, Point p, Point prep)
     {

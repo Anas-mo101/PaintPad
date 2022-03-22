@@ -20,23 +20,6 @@ public class Line extends JComponent{
       this.width = width;
     }
 
-    // public Line(){
-    //   super();
-    //   this.startPoint = new Point(5,5);
-    //   this.color = Color.BLACK;
-    //   this.width = 20;
-    //   Graphics g = getGraphics();
-    //   super.paintComponent(g);
-    //   g.setColor(color);
-    //   line = (Graphics2D) g;
-    //   line.setStroke(new BasicStroke(width));
-    //   line.drawLine( (int)startPoint.getX(), (int)startPoint.getY(), 200, 200);
-    // }
-
-    // public JComponent getComp(){
-    //   return this.getComp();
-    // }
-
     /**
      * Used to allow shape to flow cursior
      * @param floatingPoint 
@@ -49,7 +32,7 @@ public class Line extends JComponent{
       line.drawLine( (int)startPoint.getX(), (int)startPoint.getY(), (int)floatingPoint.getX(), (int)floatingPoint.getY());
 
       try {
-        Thread.sleep(50);
+        Thread.sleep(60);
         line.setColor(Color.WHITE);  
         line.drawLine( (int)startPoint.getX(), (int)startPoint.getY(), (int)floatingPoint.getX(), (int)floatingPoint.getY());
       } catch (InterruptedException e) {

@@ -32,6 +32,8 @@ public class DrawingPointer {
     private static Color inkColor;
     private static int width;
 
+    public static Boolean checkPressedAndStill = false;
+
     DrawingPointer(){
         checkPressedAndStill();
     }
@@ -70,21 +72,25 @@ public class DrawingPointer {
             case "MouseReleased":     
                 mouseReleased = event.getPoint();
                 pressed = false;
+                checkPressedAndStill = false;
                 break;
             case "MouseEntered":    
                 mouseEntered = event.getPoint();
                 break;
             case "MouseDragged":    
                 mouseDragged = event.getPoint();
+                checkPressedAndStill = false;
                 break;
             case "MouseExited":    
                 mouseExited = event.getPoint();
                 break;
             case "MouseMoved":    
                 mouseMoved= event.getPoint();
+                checkPressedAndStill = false;
                 break;
             default:   break;
         }
+        
     }
 
     /**
@@ -97,12 +103,13 @@ public class DrawingPointer {
         public void run() {
             if(pressed){
                 if(prePoint2 == mouseDragged){
+                    checkPressedAndStill = true;
                     switch(state){
                         case "LINE":    line("MousePressedAndStill", inkColor, width, graphics);
                                         break;
-                        case "STAR":    star("MousePressedAndStill", Color.BLACK, graphics);
+                        case "STAR":    star("MousePressedAndStill", inkColor, graphics);
                                         break;
-                        case "TRIANGLE":triangle("MousePressedAndStill", Color.BLACK, graphics);
+                        case "TRIANGLE":triangle("MousePressedAndStill", inkColor, graphics);
                                         break;
                         default:        break;
                     }
@@ -212,7 +219,6 @@ public class DrawingPointer {
             try {
                 Thread.sleep(50);
                 triangle.paintComponent(g, mouseReleased);
-                System.out.println("Draw line");
             } catch (InterruptedException event) {
                 event.printStackTrace();
             }

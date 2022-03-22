@@ -59,7 +59,7 @@ public class Triangle extends JComponent{
         g2.fillPolygon(X, Y, nPoints);
 
         try {
-            Thread.sleep(50);
+            Thread.sleep(60);
             g2.setColor(Color.WHITE);
             g2.fillPolygon(X, Y, nPoints);
         } catch (InterruptedException e) {
