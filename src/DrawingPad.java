@@ -1,14 +1,15 @@
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.security.cert.Extension;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class DrawingPad extends JPanel{
@@ -107,15 +108,49 @@ public class DrawingPad extends JPanel{
         DrawingPointer.setSate(i);
     } 
 
-    public void saveImage(){
+    public String saveImage(Boolean isSaveAs, String path){
         try {
             BufferedImage bimage = new BufferedImage(Pad.getWidth(null), Pad.getHeight(null), BufferedImage.TYPE_INT_ARGB);
             Graphics2D bGr = bimage.createGraphics();
             bGr.drawImage( Pad , 0, 0, null);
-            ImageIO.write(bimage , "png", new File("test.png"));
-            bGr.dispose();
+
+            if(isSaveAs){
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showSaveDialog(this);
+                if(returnVal == JFileChooser.APPROVE_OPTION) {
+                    ImageIO.write(bimage , "png", new File(chooser.getSelectedFile().getAbsolutePath() + ".png"));
+                    bGr.dispose();
+                    return chooser.getSelectedFile().getAbsolutePath();
+                }
+            }else{
+                ImageIO.write(bimage , "png", new File(path + ".png"));
+            }
+            return null;
         } catch (Exception e) {
             System.out.println("error: " + e);
+            return null;
+        }
+    }
+
+    public String openImage(){
+        try {
+
+            JFileChooser chooser = new JFileChooser();
+            chooser.setMultiSelectionEnabled(false);
+            chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter());
+            chooser.setFileFilter(new FileNameExtensionFilter("Image Files", "png"));
+
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                BufferedImage image = ImageIO.read(new File(chooser.getSelectedFile().getAbsolutePath()));
+                clearAll();
+                Pad.getGraphics().drawImage(image, 0, 0, this);
+                return chooser.getSelectedFile().getAbsolutePath();
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("error: " + e);
+            return null;
         }
     }
 

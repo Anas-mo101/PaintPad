@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -7,9 +9,12 @@ import javax.swing.event.ChangeListener;
 public class App extends JFrame {
 
     private DrawingPad drawingPad = new DrawingPad();
+    private String fileTitle = null;
+    private String filePath = null;
     
 	public App(){
-		super("Paint");
+		super("PaintPad");
+        
         this.setJMenuBar(confgbar()); 
         this.add(toolbar(),BorderLayout.NORTH);
         this.addComponentListener(new ComponentAdapter() {
@@ -19,8 +24,8 @@ public class App extends JFrame {
         });
 
         JPanel footerbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
         Label xcoord = new Label();
-        
         Label separate = new Label(",");
         Label ycoord = new Label();
         footerbar.add(xcoord);
@@ -57,23 +62,61 @@ public class App extends JFrame {
      */
     public JMenuBar confgbar(){
         JMenuBar mb = new JMenuBar();  
-        JMenu file = new JMenu("File");  
-        JMenu set = new JMenu("Settings");  
-        JMenu crds = new JMenu("Credits");  
+        JMenu file = new JMenu("File");    
+        JMenu more = new JMenu("More");  
 
         JMenuItem sa = new JMenuItem("Save as");  
         sa.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingPad.saveImage();
+                filePath = drawingPad.saveImage(true,null);
+                if(filePath != null){
+                    fileTitle = filePath.substring(filePath.lastIndexOf(File.separator)+1); 
+                    setTitle("PaintPad - " + fileTitle);
+                }
             }
         });
-        file.add(sa); 
+
+
+        JMenuItem s = new JMenuItem("Save");  
+        s.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(fileTitle == null){
+                    drawingPad.saveImage(true,null);
+                }else{
+                    drawingPad.saveImage(false,filePath);
+                }
+            }
+        });
+
+        JMenuItem open = new JMenuItem("Open");  
+        open.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filePath = drawingPad.openImage();
+                if(filePath != null){
+                    fileTitle = filePath.substring(filePath.lastIndexOf(File.separator)+1); 
+                    setTitle("PaintPad - " + fileTitle);
+                }
+            }
+        });
+
+        file.add(s); 
+        file.add(sa);
+        file.add(open); 
+
+        JMenuItem crds = new JMenuItem("Credits"); 
+        crds.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Credits();
+            }
+        });
+        more.add(crds);
         
         mb.add(file);  
-        mb.add(set); 
-        mb.add(crds); 
-
+        mb.add(more); 
         return mb;
     }
 

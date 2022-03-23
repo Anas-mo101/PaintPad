@@ -150,7 +150,7 @@ public class DrawingPointer {
     public static void pen(String e, Color c, int w, Graphics g){
         Pen dot = new Pen(c, w);
         if(e.equals("MouseDragged")){
-            dot._paintComponent(g, mouseDragged, prePoint);
+            dot.paintComponent(g, mouseDragged, prePoint);
             prePoint = mouseDragged;
         }
     }
