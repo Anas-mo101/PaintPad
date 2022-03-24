@@ -108,17 +108,22 @@ public class DrawingPad extends JPanel{
         DrawingPointer.setSate(i);
     } 
 
+
+ 
+
     public String saveImage(Boolean isSaveAs, String path){
         try {
             BufferedImage bimage = new BufferedImage(Pad.getWidth(null), Pad.getHeight(null), BufferedImage.TYPE_INT_ARGB);
             Graphics2D bGr = bimage.createGraphics();
             bGr.drawImage( Pad , 0, 0, null);
+            
 
             if(isSaveAs){
                 JFileChooser chooser = new JFileChooser();
                 int returnVal = chooser.showSaveDialog(this);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     ImageIO.write(bimage , "png", new File(chooser.getSelectedFile().getAbsolutePath() + ".png"));
+                    
                     bGr.dispose();
                     return chooser.getSelectedFile().getAbsolutePath();
                 }
@@ -157,15 +162,20 @@ public class DrawingPad extends JPanel{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        if(Pad == null){
-            setDrawingPad();
-        }
+        setDrawingPad();
     }
-    
+
     public void setDrawingPad() {
-        Pad = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics2D = (Graphics2D) Pad.getGraphics();
-        graphics2D.fillRect(0,0,getWidth(),getHeight());
-        graphics2D.dispose();
+        if(Pad == null){
+            Pad = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics2D = (Graphics2D) Pad.getGraphics();
+            graphics2D.fillRect(0,0,getWidth(),getHeight());
+            graphics2D.dispose();
+        }else{
+            BufferedImage bimage = new BufferedImage(Pad.getWidth(null), Pad.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D bGr = bimage.createGraphics();
+            bGr.drawImage( Pad , 0, 0, null);
+            Pad.getGraphics().drawImage(bimage, 0, 0, this);
+        }
     } 
 }
