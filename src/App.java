@@ -167,6 +167,15 @@ public class App extends JFrame {
                 DrawingPointer.setSate(4);
             }
         });
+	  
+	    //rectangle
+        JButton rectangleBtn = new JButton(new ImageIcon("media/rectangle-fill.png"));
+        rectangleBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drawingPad.setPointerState(5);
+            }
+        });
 
         JButton clearBtn = new JButton(new ImageIcon("media/trash-fill.png")); // clear
         clearBtn.addActionListener(new ActionListener() {
