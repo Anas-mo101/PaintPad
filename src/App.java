@@ -200,7 +200,7 @@ public class App extends JFrame {
         rectangleBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingPad.setPointerState(5);
+                // drawingPad.setPointerState(?);
             }
         });
 
