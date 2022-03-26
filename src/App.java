@@ -19,7 +19,8 @@ public class App extends JFrame {
         this.add(toolbar(),BorderLayout.NORTH);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
-                drawingPad.setDrawingPad();
+                // System.out.println(componentEvent.getComponent().getSize());
+                drawingPad.updateDrawingPad();
             }
         });
 
@@ -50,7 +51,8 @@ public class App extends JFrame {
         parentPad.add(drawingPad);
         this.add(parentPad,BorderLayout.CENTER);
 
-		setSize(800,600);
+        Dimension dimension = new Dimension(1000,600);
+        setMinimumSize(dimension);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
@@ -77,13 +79,16 @@ public class App extends JFrame {
             }
         });
 
-
         JMenuItem s = new JMenuItem("Save");  
         s.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(fileTitle == null){
-                    drawingPad.saveImage(true,null);
+                if(filePath == null){
+                    filePath = drawingPad.saveImage(true,null);
+                    if(filePath != null){
+                        fileTitle = filePath.substring(filePath.lastIndexOf(File.separator)+1); 
+                        setTitle("PaintPad - " + fileTitle);
+                    }
                 }else{
                     drawingPad.saveImage(false,filePath);
                 }
@@ -96,7 +101,12 @@ public class App extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 filePath = drawingPad.openImage();
                 if(filePath != null){
-                    fileTitle = filePath.substring(filePath.lastIndexOf(File.separator)+1); 
+                    if(filePath.contains(".png")){
+                        fileTitle = filePath.substring(filePath.lastIndexOf(File.separator)+1); 
+                        fileTitle = fileTitle.substring(0, fileTitle.length() - ".png".length() );
+                    }else{
+                        fileTitle = filePath.substring(filePath.lastIndexOf(File.separator)+1); 
+                    }
                     setTitle("PaintPad - " + fileTitle);
                 }
             }
@@ -132,6 +142,7 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawingPad.setPointerState(0);
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
@@ -140,6 +151,9 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawingPad.setPointerState(1);
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
+                    new ImageIcon("media/pen-fill.png").getImage(),
+                    new Point(0,0),"custom cursor"));
             }
         });
         
@@ -148,6 +162,7 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawingPad.setPointerState(2);
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
 
@@ -156,6 +171,7 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawingPad.setPointerState(3);
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
 
@@ -163,8 +179,19 @@ public class App extends JFrame {
         triangleBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // drawingMode = starBtn.getLabel();
                 DrawingPointer.setSate(4);
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+            }
+        });
+
+        JButton eraserBtn = new JButton(new ImageIcon("media/eraser-fill.png")); // eraser
+        eraserBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DrawingPointer.setSate(5);
+                setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
+                    new ImageIcon("media/eraser-fill.png").getImage(),
+                    new Point(0,0),"custom cursor"));
             }
         });
 
@@ -172,7 +199,19 @@ public class App extends JFrame {
         clearBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawingPad.clearAll();
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete all ?","Warning",dialogButton);
+                if(dialogResult == JOptionPane.YES_OPTION){
+                    drawingPad.clearAll();
+                }
+            }
+        });
+
+        JButton resizeBtn = new JButton(new ImageIcon("media/aspect-ratio.png")); // clear
+        resizeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drawingPad.resizeDrawingPad(getSize());
             }
         });
 
@@ -183,6 +222,21 @@ public class App extends JFrame {
             }
         });
 
+        JButton bckgrdColorPicker = new JButton(new ImageIcon("media/image-fill.png"));
+        bckgrdColorPicker.addActionListener(new ActionListener(){  
+            public void actionPerformed(ActionEvent event)  
+            {  
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Repainting the background will delete all your drawings ?","Warning",dialogButton);
+                if(dialogResult == JOptionPane.YES_OPTION){
+                    Color selectedColor = JColorChooser.showDialog(drawingPad, "Pick a Background Color", Color.white);  
+                    if (selectedColor != null)  
+                    {  
+                        drawingPad.setBackgroundColor(selectedColor);
+                    }  
+                }
+            }  
+        });
 
         DefaultBoundedRangeModel model = new DefaultBoundedRangeModel(20, 0, 1, 100);
         JSlider slider = new JSlider(model);
@@ -191,7 +245,6 @@ public class App extends JFrame {
         slider.setPaintTicks(true);
         slider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                // drawingWidth = slider.getValue();
                 drawingPad.setWidth(slider.getValue());
             }
         });
@@ -201,8 +254,11 @@ public class App extends JFrame {
         toolbar.add(lineBtn);
         toolbar.add(starBtn);
         toolbar.add(triangleBtn);
+        toolbar.add(eraserBtn);
         toolbar.add(clearBtn);
+        toolbar.add(resizeBtn);
         toolbar.add(colorPicker);
+        toolbar.add(bckgrdColorPicker);
         toolbar.add(slider);
         return toolbar;
     }

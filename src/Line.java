@@ -25,15 +25,12 @@ public class Line extends JComponent{
      * @param floatingPoint 
      * @param g
      */
-    public void init(Point floatingPoint, Point prePoint, Graphics g){
-      line = (Graphics2D) g;
-      line.setColor(color);
-      line.setStroke(new BasicStroke(width));
-      line.drawLine( (int)startPoint.getX(), (int)startPoint.getY(), (int)floatingPoint.getX(), (int)floatingPoint.getY());
+    public void init(Point floatingPoint, Color bckground, Point prePoint, Graphics g){
+      paintComponent(floatingPoint, g);
 
       try {
         Thread.sleep(60);
-        line.setColor(Color.WHITE);  
+        line.setColor(bckground);  
         line.drawLine( (int)startPoint.getX(), (int)startPoint.getY(), (int)floatingPoint.getX(), (int)floatingPoint.getY());
       } catch (InterruptedException e) {
           e.printStackTrace();

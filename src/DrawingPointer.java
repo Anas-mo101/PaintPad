@@ -23,13 +23,14 @@ public class DrawingPointer {
     private static Boolean pressed = false;
 
 
-    private static final String states[] = {"CURSIOR","PEN","LINE","STAR","TRIANGLE"};
+    private static final String states[] = {"CURSIOR","PEN","LINE","STAR","TRIANGLE","ERASER"};
     private static String state = states[0];
 
     private static DrawingPointer c = new DrawingPointer();
 
     private static Graphics graphics;
     private static Color inkColor;
+    private static Color bckgdColor;
     private static int width;
 
     public static Boolean checkPressedAndStill = false;
@@ -38,10 +39,11 @@ public class DrawingPointer {
         checkPressedAndStill();
     }
 
-    public static void doMouseAtion(MouseEvent event, String etype, Color c, int w, Graphics g){
+    public static void doMouseAtion(MouseEvent event, String etype, Color c, Color bgc, int w, Graphics g){
         graphics = g;
         inkColor = c;
         width = w;
+        bckgdColor = bgc;
         updateMouseEventsPoints(event, etype);
 
         switch(state){
@@ -49,11 +51,13 @@ public class DrawingPointer {
                             break;
             case "PEN":     pen(etype, c, w, g);
                             break;
-            case "LINE":    line(etype, c, w, g);
+            case "ERASER":  pen(etype, bgc, w, g);
                             break;
-            case "STAR":    star(etype, c, g);
+            case "LINE":    line(etype, bgc, c, w, g);
                             break;
-            case "TRIANGLE":triangle(etype, c, g);
+            case "STAR":    star(etype, bgc, c, g);
+                            break;
+            case "TRIANGLE":triangle(etype, bgc, c, g);
                             break;                
             default:        break;
         }
@@ -105,11 +109,11 @@ public class DrawingPointer {
                 if(prePoint2 == mouseDragged){
                     checkPressedAndStill = true;
                     switch(state){
-                        case "LINE":    line("MousePressedAndStill", inkColor, width, graphics);
+                        case "LINE":    line("MousePressedAndStill", bckgdColor, inkColor, width, graphics);
                                         break;
-                        case "STAR":    star("MousePressedAndStill", inkColor, graphics);
+                        case "STAR":    star("MousePressedAndStill", bckgdColor, inkColor, graphics);
                                         break;
-                        case "TRIANGLE":triangle("MousePressedAndStill", inkColor, graphics);
+                        case "TRIANGLE":triangle("MousePressedAndStill", bckgdColor, inkColor, graphics);
                                         break;
                         default:        break;
                     }
@@ -162,12 +166,12 @@ public class DrawingPointer {
      * @param w drawing line width
      * @param g drawing pad graphics
      */
-    public static void line(String e, Color c, int w, Graphics g){
+    public static void line(String e, Color bkc, Color c, int w, Graphics g){
         Line line = new Line(mousePressed, c, w);
         
         if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
 
-            line.init(mouseDragged, prePoint, g);
+            line.init(mouseDragged, bkc, prePoint, g);
             prePoint2 = mouseDragged;
 
         }else if(e.equals("MouseReleased")){
@@ -187,11 +191,11 @@ public class DrawingPointer {
      * @param w drawing star width
      * @param g drawing pad graphics
      */
-    public static void star(String e, Color c, Graphics g){
+    public static void star(String e, Color bkc, Color c, Graphics g){
 
         Star star = new Star(mousePressed, c);
         if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
-            star.init(mouseDragged, g);
+            star.init(mouseDragged, bkc, g);
             prePoint2 = mouseDragged;
         }else if(e.equals("MouseReleased")){
             try {
@@ -210,10 +214,10 @@ public class DrawingPointer {
      * @param w drawing star width
      * @param g drawing pad graphics
      */
-    public static void triangle(String e, Color c, Graphics g){
+    public static void triangle(String e, Color bkc, Color c, Graphics g){
         Triangle triangle = new Triangle(mousePressed, c);
         if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
-            triangle.init(mouseDragged, g);
+            triangle.init(mouseDragged, bkc, g);
             prePoint2 = mouseDragged;
         }else if(e.equals("MouseReleased")){
             try {

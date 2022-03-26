@@ -24,7 +24,7 @@ public class Star extends JComponent{
      * @param floatingPoint current cursior point
      * @param g drawing pad graphics
      */
-    public void init(Point floatingPoint ,Graphics g){
+    public void init(Point floatingPoint, Color bckground, Graphics g){
         super.paintComponent(g);
         g.setColor(color);
         Graphics2D g2 = (Graphics2D) g;
@@ -33,7 +33,6 @@ public class Star extends JComponent{
         int midY = (int) floatingPoint.getY();
 
         int radius[] = getRadius(floatingPoint);
-
         int nPoints = 10;
         int[] X = new int[nPoints];
         int[] Y = new int[nPoints];
@@ -50,7 +49,7 @@ public class Star extends JComponent{
 
         try {
             Thread.sleep(60);
-            g2.setColor(Color.WHITE);
+            g2.setColor(bckground);
             g2.fillPolygon(X, Y, nPoints);
         } catch (InterruptedException e) {
             e.printStackTrace();
