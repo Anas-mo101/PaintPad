@@ -263,6 +263,7 @@ public class App extends JFrame {
         toolbar.add(lineBtn);
         toolbar.add(starBtn);
         toolbar.add(triangleBtn);
+	toolbar.add(rectangleBtn);
         toolbar.add(eraserBtn);
         toolbar.add(clearBtn);
         toolbar.add(resizeBtn);
