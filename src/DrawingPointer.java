@@ -58,7 +58,10 @@ public class DrawingPointer {
             case "STAR":    star(etype, bgc, c, g);
                             break;
             case "TRIANGLE":triangle(etype, bgc, c, g);
-                            break;                
+                            break;
+             case "RECTANGLE":rectangle(etype, c, g);
+                break;
+                
             default:        break;
         }
     }
@@ -115,6 +118,8 @@ public class DrawingPointer {
                                         break;
                         case "TRIANGLE":triangle("MousePressedAndStill", bckgdColor, inkColor, graphics);
                                         break;
+                        case "RECTANGLE":rectangle("MousePressedAndStill", inkColor, graphics);
+                            break;
                         default:        break;
                     }
                 }
@@ -228,7 +233,27 @@ public class DrawingPointer {
             }
         }
     }
-
+/**
+     * Used to handle rectangle state drawing
+     * @param e mouse event type
+     * @param c picked drawing color
+     * @param g drawing pad graphics
+     */
+    public static void rectangle (String e, Color c, Graphics g){
+        Rectangle rectangle = new Rectangle(mousePressed, c);
+        if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
+            rectangle.init(mouseDragged, g);
+            prePoint2 = mouseDragged;
+        }else if(e.equals("MouseReleased")){
+            try {
+                Thread.sleep(50);
+                rectangle.paintComponent(g, mouseReleased);
+            } catch (InterruptedException event) {
+                event.printStackTrace();
+            }
+        }
+    }
+    
     public static void cursior(String e){
         // handle cursor events
     }
