@@ -265,11 +265,11 @@ public class DrawingPointer {
      * @param c picked drawing color
      * @param g drawing pad graphics
      */
-    public static void rectangle (String e, Color c, Graphics g){
+   public static void rectangle (String e, Color c, Graphics g){
         Rectangle rectangle = new Rectangle(mousePressed, c);
         if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
-            rectangle.init(mouseDragged, g);
-            prePoint2 = mouseDragged;
+            rectangle.init(mouseDragged,g);
+            prePoint = mouseDragged;
         }else if(e.equals("MouseReleased")){
             try {
                 Thread.sleep(50);
