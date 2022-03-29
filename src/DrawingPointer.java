@@ -23,7 +23,7 @@ public class DrawingPointer {
     private static Boolean pressed = false;
 
 
-    private static final String states[] = {"CURSIOR","PEN","LINE","STAR","TRIANGLE","ERASER"};
+    private static final String states[] = {"CURSIOR","PEN","LINE","STAR","TRIANGLE","ERASER","CIRCLE"};
     private static String state = states[0];
 
     private static DrawingPointer c = new DrawingPointer();
@@ -59,7 +59,9 @@ public class DrawingPointer {
                             break;
             case "TRIANGLE":triangle(etype, bgc, c, g);
                             break;
-             case "RECTANGLE":rectangle(etype, c, g);
+            case "CIRCLE":circle(etype, bgc, c, g);
+                            break;
+            case "RECTANGLE":rectangle(etype, c, g);
                 break;
                 
             default:        break;
@@ -120,6 +122,8 @@ public class DrawingPointer {
                                         break;
                         case "RECTANGLE":rectangle("MousePressedAndStill", inkColor, graphics);
                             break;
+                        case "CIRCLE":circle("MousePressedAndStill", bckgdColor, inkColor, graphics);
+                                        break;
                         default:        break;
                     }
                 }
@@ -228,6 +232,28 @@ public class DrawingPointer {
             try {
                 Thread.sleep(50);
                 triangle.paintComponent(g, mouseReleased);
+            } catch (InterruptedException event) {
+                event.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * Used to handle circle state drawing
+     * @param e mouse event type 
+     * @param c picked drawing color
+     * @param w drawing star width
+     * @param g drawing pad graphics
+     */
+    public static void circle(String e, Color bkc, Color c, Graphics g){
+        Circle circle = new Circle(mousePressed, c);
+        if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
+            circle.init(mouseDragged, bkc,g);
+            prePoint2 = mouseDragged;
+        }else if(e.equals("MouseReleased")){
+            try {
+                Thread.sleep(50);
+                circle.paintComponent(g, mouseReleased);
             } catch (InterruptedException event) {
                 event.printStackTrace();
             }
