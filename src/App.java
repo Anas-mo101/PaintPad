@@ -183,6 +183,15 @@ public class App extends JFrame {
                 setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
+        
+        JButton circleBtn = new JButton(new ImageIcon("media/circle-fill.png")); //circle
+        circleBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DrawingPointer.setSate(6);
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+            }
+        });
 
         JButton eraserBtn = new JButton(new ImageIcon("media/eraser-fill.png")); // eraser
         eraserBtn.addActionListener(new ActionListener() {
@@ -263,6 +272,7 @@ public class App extends JFrame {
         toolbar.add(lineBtn);
         toolbar.add(starBtn);
         toolbar.add(triangleBtn);
+        toolbar.add(circleBtn);
 	toolbar.add(rectangleBtn);
         toolbar.add(eraserBtn);
         toolbar.add(clearBtn);
