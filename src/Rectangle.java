@@ -1,6 +1,6 @@
-import java.awt.*;
+
 import javax.swing.*;
-import java.awt.event.MouseEvent;
+import java.awt.*;
 import java.lang.Math;
 
 /**
@@ -13,11 +13,6 @@ public class Rectangle extends JComponent { //
     int x, y, x2, y2;
 
 
-    public Rectangle() {
-        super();
-
-    }
-
     public void setStartPoint(int x, int y) {
         this.x = x;
         this.y = y;
@@ -28,37 +23,38 @@ public class Rectangle extends JComponent { //
         y2 = (y);
     }
 
-    public Rectangle(Point startPoint, Color color) {
+     Rectangle(Point startPoint, Color color) {
         super();
+        x = y = x2 = y2 = 0;
         this.startPoint = startPoint;
         this.color = color;
     }
 
     /**
      * Used to allow shape to flow cursior
-     *
-     * @param g             drawing pad graphics
+
+     * @param g   drawing pad graphics
      */
-    public void init( Graphics g,MouseEvent e, int x, int y, int x2, int y2) {
+     public void init(Point floatingPoint ,Graphics g) {
+         super.paintComponent(g);
+         g.setColor(color);
+         Graphics2D g2 = (Graphics2D) g;
+         int start_corX = (int)startPoint.getX();
+         int start_corY = (int)startPoint.getY();
+         int floating_corX = (int) floatingPoint.getX();
+         int floating_corY = (int) floatingPoint.getY();
 
-        int px = Math.min(x, x2);
-        int py = Math.min(y, y2);
-        int pw = Math.abs(x - x2);
-        int ph = Math.abs(y - y2);
-        super.paintComponent(g);
-        setStartPoint(e.getX(), e.getY());
-        setEndPoint(e.getX(), e.getY());
-        g.setColor(color);
-        Graphics2D g2 = (Graphics2D) g;
-
-
+         int px = Math.min(start_corX, floating_corX);
+         int py = Math.min(start_corY, floating_corY);
+         int pw = Math.abs(start_corX - floating_corX);
+         int ph = Math.abs(start_corY - floating_corY);
         g2.setColor(color);
-        g2.fillPolygon(px, pw, py, ph);
+        g2.drawRect(px, py, pw, ph);
 
         try {
             Thread.sleep(60);
             g2.setColor(Color.WHITE);
-            g2.fillPolygon(px, py, pw, ph);
+            g2.drawRect(px, py, pw, ph);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -66,24 +62,25 @@ public class Rectangle extends JComponent { //
 
     /**
      * Used to draw final shape
-     *
      * @param g drawing pad graphics
      */
-    public void paintComponent(Graphics g, Point mouseReleased) {
-
-
-        int px = Math.min(x, x2);
-        int py = Math.min(y, y2);
-        int pw = Math.abs(x - x2);
-        int ph = Math.abs(y - y2);
+    public void paintComponent(Graphics g, Point floatingPoint) {
         super.paintComponent(g);
         g.setColor(color);
         Graphics2D g2 = (Graphics2D) g;
+        int start_corX = (int)startPoint.getX();
+        int start_corY = (int)startPoint.getY();
+        int floating_corX = (int) floatingPoint.getX();
+        int floating_corY = (int) floatingPoint.getY();
 
+        int px = Math.min(start_corX, floating_corX);
+        int py = Math.min(start_corY, floating_corY);
+        int pw = Math.abs(start_corX - floating_corX);
+        int ph = Math.abs(start_corY - floating_corY);
+        //g2.drawRect(px, py, pw, ph);
+        g2.fillRect(px, py, pw, ph);
 
-        g2.fillPolygon(px, py, pw, ph);
     }
 
 
 }
-
