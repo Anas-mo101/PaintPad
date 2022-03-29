@@ -59,12 +59,12 @@ public class Circle extends JComponent{
         Y[2] = point3_corY;
 
         g2.setColor(color);
-        g2.fillOval(start_corX, start_corY, floating_corX, floating_corY);
+        g2.fillOval(start_corX, start_corY, hghty, hghty);
 
         try {
             Thread.sleep(60);
             g2.setColor(bckground);
-            g2.fillOval(start_corX, start_corY, floating_corX, floating_corY);
+            g2.fillOval(start_corX, start_corY, hghty, hghty);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -109,7 +109,7 @@ public class Circle extends JComponent{
         Y[1] = floating_corY;
         Y[2] = point3_corY;
 
-        g2.fillOval(start_corX, start_corY, floating_corX, floating_corY);
+        g2.fillOval(start_corX, start_corY, hghty, hghty);
     }
 
 }
