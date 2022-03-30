@@ -25,7 +25,7 @@ public class Line extends JComponent{
      * @param floatingPoint 
      * @param g
      */
-    public void init(Point floatingPoint, Color bckground, Point prePoint, Graphics g){
+    public void init(Point floatingPoint, Color bckground, Graphics g){
       paintComponent(floatingPoint, g);
 
       try {
@@ -45,12 +45,5 @@ public class Line extends JComponent{
       line.drawLine( (int)startPoint.getX(), (int)startPoint.getY(), (int)_p.getX(), (int)_p.getY());
     }
 
-    public final static float calculateAngleFrom(float obj1X, float obj1Y, float obj2X, float obj2Y)
-    {
-      float angleTarget = (float) Math.toDegrees(Math.atan2(obj2Y - obj1Y, obj2X - obj1X));
-      if (angleTarget < 0)
-        angleTarget = 360 + angleTarget;
-      return angleTarget;
-    }
 }
 

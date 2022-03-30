@@ -7,15 +7,9 @@ import javax.swing.*;
 public class Circle extends JComponent{
     
     public Color color = Color.BLACK;
-    public Point startPoint;
-    
-    public Circle(){
-        super();
-    }
 
-    public Circle(Point startPoint, Color color){
+    public Circle(Color color){
         super();
-        this.startPoint = startPoint;
         this.color = color;
     }
 
@@ -24,13 +18,13 @@ public class Circle extends JComponent{
      * @param floatingPoint current cursior point
      * @param g drawing pad graphics
      */
-    public void init(Point floatingPoint, Color bckground ,Graphics g){
+    public void init(Point floatingPoint, Point startPoint, Color bckground ,Graphics g){
         super.paintComponent(g);
         g.setColor(color);
         Graphics2D g2 = (Graphics2D) g;
 
         int diameter = (int) startPoint.distance(floatingPoint);
-        g2.fillOval( (int) startPoint.getX(), (int)startPoint.getY(), diameter, diameter);
+        g2.fillOval((int) startPoint.getX(), (int)startPoint.getY(), diameter, diameter);
 
         try {
             Thread.sleep(60);
@@ -46,7 +40,7 @@ public class Circle extends JComponent{
      * @param g drawing pad graphics
      * @param floatingPoint current cursior point
      */
-    public void paintComponent(Graphics g, Point floatingPoint)
+    public void paintComponent(Graphics g, Point startPoint,Point floatingPoint)
     {
         super.paintComponent(g);
         g.setColor(color);
@@ -54,5 +48,4 @@ public class Circle extends JComponent{
         int diameter = (int) startPoint.distance(floatingPoint);
         g2.fillOval( (int) startPoint.getX(), (int)startPoint.getY(), diameter, diameter);
     }
-
 }

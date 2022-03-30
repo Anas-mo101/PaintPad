@@ -9,11 +9,11 @@ import java.lang.Math;
 public class Rectangle extends JComponent { //
 
     public Color color = Color.BLACK;
-    public Point startPoint;
+    // public Point startPoint;
 
-    Rectangle(Point startPoint, Color color) {
+    Rectangle(Color color) {
         super();
-        this.startPoint = startPoint;
+        // this.startPoint = startPoint;
         this.color = color;
     }
 
@@ -21,19 +21,19 @@ public class Rectangle extends JComponent { //
      * Used to allow shape to flow cursior
      * @param g   drawing pad graphics
      */
-     public void init(Point floatingPoint, Color bckground ,Graphics g) {
-         super.paintComponent(g);
-         g.setColor(color);
-         Graphics2D g2 = (Graphics2D) g;
-         int start_corX = (int)startPoint.getX();
-         int start_corY = (int)startPoint.getY();
-         int floating_corX = (int) floatingPoint.getX();
-         int floating_corY = (int) floatingPoint.getY();
+    public void init(Point floatingPoint, Point startPoint, Color bckground ,Graphics g) {
+        super.paintComponent(g);
+        g.setColor(color);
+        Graphics2D g2 = (Graphics2D) g;
+        int start_corX = (int)startPoint.getX();
+        int start_corY = (int)startPoint.getY();
+        int floating_corX = (int) floatingPoint.getX();
+        int floating_corY = (int) floatingPoint.getY();
 
-         int px = Math.min(start_corX, floating_corX);
-         int py = Math.min(start_corY, floating_corY);
-         int pw = Math.abs(start_corX - floating_corX);
-         int ph = Math.abs(start_corY - floating_corY);
+        int px = Math.min(start_corX, floating_corX);
+        int py = Math.min(start_corY, floating_corY);
+        int pw = Math.abs(start_corX - floating_corX);
+        int ph = Math.abs(start_corY - floating_corY);
 
         g2.setColor(color);
         g2.fillRect(px, py, pw, ph);
@@ -51,7 +51,7 @@ public class Rectangle extends JComponent { //
      * Used to draw final shape
      * @param g drawing pad graphics
      */
-    public void paintComponent(Graphics g, Point floatingPoint) {
+    public void paintComponent(Graphics g, Point startPoint,Point floatingPoint) {
         super.paintComponent(g);
         g.setColor(color);
         Graphics2D g2 = (Graphics2D) g;
