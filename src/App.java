@@ -209,7 +209,8 @@ public class App extends JFrame {
         rectangleBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // drawingPad.setPointerState(?);
+                drawingPad.setPointerState(7);
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
 
@@ -273,7 +274,7 @@ public class App extends JFrame {
         toolbar.add(starBtn);
         toolbar.add(triangleBtn);
         toolbar.add(circleBtn);
-	toolbar.add(rectangleBtn);
+	    toolbar.add(rectangleBtn);
         toolbar.add(eraserBtn);
         toolbar.add(clearBtn);
         toolbar.add(resizeBtn);

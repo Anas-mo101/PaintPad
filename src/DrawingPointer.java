@@ -23,7 +23,7 @@ public class DrawingPointer {
     private static Boolean pressed = false;
 
 
-    private static final String states[] = {"CURSIOR","PEN","LINE","STAR","TRIANGLE","ERASER","CIRCLE"};
+    private static final String states[] = {"CURSIOR","PEN","LINE","STAR","TRIANGLE","ERASER","CIRCLE","RECTANGLE"};
     private static String state = states[0];
 
     private static DrawingPointer c = new DrawingPointer();
@@ -61,7 +61,7 @@ public class DrawingPointer {
                             break;
             case "CIRCLE":circle(etype, bgc, c, g);
                             break;
-            case "RECTANGLE":rectangle(etype, c, g);
+            case "RECTANGLE":rectangle(etype, bgc, c, g);
                 break;
                 
             default:        break;
@@ -120,7 +120,7 @@ public class DrawingPointer {
                                         break;
                         case "TRIANGLE":triangle("MousePressedAndStill", bckgdColor, inkColor, graphics);
                                         break;
-                        case "RECTANGLE":rectangle("MousePressedAndStill", inkColor, graphics);
+                        case "RECTANGLE":rectangle("MousePressedAndStill", bckgdColor, inkColor, graphics);
                             break;
                         case "CIRCLE":circle("MousePressedAndStill", bckgdColor, inkColor, graphics);
                                         break;
@@ -252,7 +252,7 @@ public class DrawingPointer {
             prePoint2 = mouseDragged;
         }else if(e.equals("MouseReleased")){
             try {
-                Thread.sleep(50);
+                Thread.sleep(60);
                 circle.paintComponent(g, mouseReleased);
             } catch (InterruptedException event) {
                 event.printStackTrace();
@@ -265,14 +265,14 @@ public class DrawingPointer {
      * @param c picked drawing color
      * @param g drawing pad graphics
      */
-   public static void rectangle (String e, Color c, Graphics g){
+   public static void rectangle (String e, Color bkc, Color c, Graphics g){
         Rectangle rectangle = new Rectangle(mousePressed, c);
         if(e.equals("MouseDragged") || e.equals("MousePressedAndStill")){
-            rectangle.init(mouseDragged,g);
-            prePoint = mouseDragged;
+            rectangle.init(mouseDragged, bkc, g);
+            prePoint2 = mouseDragged;
         }else if(e.equals("MouseReleased")){
             try {
-                Thread.sleep(50);
+                Thread.sleep(60);
                 rectangle.paintComponent(g, mouseReleased);
             } catch (InterruptedException event) {
                 event.printStackTrace();
